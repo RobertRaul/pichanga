@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Ciudad {
+  id        String     @id @default(cuid())
+  nombre    String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  distritos Distrito[]
+  canchas   Cancha[]
+}
+
+model Distrito {
+  id        String   @id @default(cuid())
+  nombre    String
+  ciudadId  String
+  ciudad    Ciudad   @relation(fields: [ciudadId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  canchas   Cancha[]
+
+  @@index([ciudadId])
+}
+
+model Cancha {
+  id               String      @id @default(cuid())
+  nombre           String
+  ciudadId         String
+  ciudad           Ciudad      @relation(fields: [ciudadId], references: [id], onDelete: Cascade)
+  distritoId       String
+  distrito         Distrito    @relation(fields: [distritoId], references: [id], onDelete: Cascade)
+  direccion        String
+  latitud          Float?
+  longitud         Float?
+  googleMapsUrl    String?
+  techada          Boolean     @default(false)
+  aceptaEventos    Boolean     @default(false)
+  aceptaFutbol     Boolean     @default(true)
+  aceptaVoley      Boolean     @default(false)
+  tipoCancha       String      // "6v6" o "8v8"
+  descripcion      String?
+  telefono1        String?
+  telefono2        String?
+  telefono3        String?
+  horarioInicio    String?     // "08:00"
+  horarioFin       String?     // "22:00"
+  diasAtencion     String?     // "Lunes a Domingo" o "Lunes a Viernes"
+  activa           Boolean     @default(true)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  fotos            FotoCancha[]
+
+  @@index([ciudadId])
+  @@index([distritoId])
+  @@index([activa])
+}
+
+model FotoCancha {
+  id        String   @id @default(cuid())
+  canchaId  String
+  cancha    Cancha   @relation(fields: [canchaId], references: [id], onDelete: Cascade)
+  url       String
+  principal Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([canchaId])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  nombre    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([username])
+}

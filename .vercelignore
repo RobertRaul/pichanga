@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+
+# Local database
+*.db
+*.db-journal
+prisma/*.db
+prisma/*.db-journal
+
+# Local env files
+.env.local
+.env*.local
+
+# Build output
+.next
+
+# Testing
+coverage
+
+# Misc
+.DS_Store
+*.log
+npm-debug.log*
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Documentation (optional)
+*.md
+!README.md
