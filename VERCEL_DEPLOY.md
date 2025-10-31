@@ -155,7 +155,7 @@ DATABASE_URL="tu-connection-string-aqui" npx prisma migrate deploy
 
 ## Paso 5: Poblar la Base de Datos (Seed)
 
-Para agregar datos de ejemplo (ciudades, distritos, canchas):
+Para agregar datos de ejemplo (ciudades, distritos, canchas y usuario admin):
 
 ### 5.1 Ejecutar seed localmente apuntando a producción
 
@@ -166,14 +166,24 @@ cd cancha-manager
 DATABASE_URL="tu-connection-string-aqui" npx tsx prisma/seed.ts
 ```
 
-### 5.2 Verificar que los datos se cargaron
+### 5.2 Usuario Admin por Defecto
+
+El seed crea automáticamente un usuario administrador:
+
+**Credenciales por defecto:**
+- **Username:** `admin`
+- **Password:** `admin123`
+
+**⚠️ IMPORTANTE:** Cambia esta contraseña inmediatamente en producción por seguridad.
+
+### 5.3 Verificar que los datos se cargaron
 
 Visita tu aplicación desplegada:
 ```
 https://tu-proyecto.vercel.app
 ```
 
-Deberías ver canchas en el mapa.
+Deberías ver canchas en el mapa e iniciar sesión con las credenciales del admin.
 
 ---
 
@@ -263,6 +273,69 @@ npx prisma migrate resolve --applied "nombre_de_la_migracion"
 - Verifica que las variables `NEXT_PUBLIC_SUPABASE_*` estén configuradas
 - Verifica que el bucket sea público
 - Verifica las políticas de acceso en Supabase
+
+---
+
+## Gestión de Usuarios Admin
+
+### Crear usuario admin adicional en local
+
+```bash
+cd cancha-manager
+npx tsx prisma/create-admin.ts
+```
+
+El script te pedirá:
+- Username
+- Password
+- Nombre completo
+
+### Crear usuario admin en producción
+
+```bash
+cd cancha-manager
+DATABASE_URL="tu-connection-string-aqui" npx tsx prisma/create-admin.ts
+```
+
+### Cambiar contraseña del admin (usando Prisma Studio)
+
+```bash
+# En local
+npx prisma studio
+
+# En producción
+DATABASE_URL="tu-connection-string-aqui" npx prisma studio
+```
+
+1. Ve a la tabla `User`
+2. Busca el usuario `admin`
+3. Edita el campo `password`
+4. Guarda los cambios
+
+### Listar todos los usuarios
+
+```bash
+DATABASE_URL="tu-connection-string-aqui" npx prisma studio
+```
+
+O ejecuta un script personalizado:
+
+```typescript
+// list-users.ts
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+async function main() {
+  const users = await prisma.user.findMany();
+  console.table(users);
+}
+
+main().finally(() => prisma.$disconnect());
+```
+
+```bash
+npx tsx list-users.ts
+```
 
 ---
 

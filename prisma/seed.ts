@@ -3,6 +3,23 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Crear usuario admin por defecto
+  const adminUser = await prisma.user.upsert({
+    where: { username: 'admin' },
+    update: {},
+    create: {
+      username: 'admin',
+      password: 'admin123',
+      nombre: 'Administrador'
+    }
+  });
+
+  console.log('✅ Usuario admin creado');
+  console.log('   Username: admin');
+  console.log('   Password: admin123');
+  console.log('   ⚠️  IMPORTANTE: Cambia esta contraseña en producción!');
+  console.log('');
+
   // Crear ciudades
   const lima = await prisma.ciudad.create({
     data: { nombre: 'Lima' }
