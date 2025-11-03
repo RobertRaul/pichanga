@@ -124,9 +124,9 @@ export default function HomePage() {
         {/* Hero Section */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-            Organiza tu Pichanga!
+            Organiza tu Reto!
           </h1>
-          <p className="text-gray-600 text-lg">Busca, descubre y reserva las mejores pichangas</p>
+          <p className="text-gray-600 text-lg">Busca, descubre y reserva en las mejores canchas</p>
         </div>
 
         {/* Barra de búsqueda rápida */}
